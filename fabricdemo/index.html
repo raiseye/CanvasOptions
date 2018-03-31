@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+</head>
+
+<body>
+
+  <div style="padding:100px;">
+    <canvas id="c" width="500" height="500" style="border:1px solid #ccc; "></canvas>
+    <input type="button" value="toSVG" onclick="tosvg()" />
+    <input type="text" id="svg">
+
+    <input type="button" id="opt" value="angle" onclick="option()" />
+
+    <input type="button" id="scale" value="scale" onclick="scale()" />
+  </div>
+</body>
+
+<script src="/node_modules/fabric/dist/fabric.js"></script>
+
+<script>
+
+
+function scale()
+{
+  var oldWidth,oldHeight,newWidth,newHeight;
+  oldWidth = canvas.width;
+  oldHeight = canvas.height;
+  newHeight = oldHeight + 100;
+  newWidth = oldWidth + 200;
+
+  console.log(oldWidth);
+  console.log(oldHeight);
+  console.log(newHeight);
+  console.log(newWidth);
+
+
+  canvas.width = newWidth;
+  canvas.height = newHeight;
+
+  canvas.renderAll();
+
+
+
+
+
+
+}
+
+
+function option(){
+  window.setInterval(function () {
+    console.log(red.get("angle"));
+    var obj = red;//canvas.getActiveObject();
+    if (obj)
+      if (obj.get("angle") <= 360) {
+        obj.set({ "angle": obj.get("angle") + 1});//, "scaleX": (obj.get("scaleX")) * (1 + 1 / 100), "scaleY": (obj.get("scaleY")) * (1 + 1 / 100) }
+      }
+      else {
+        obj.set({ "angle": 0, "scaleX": 1, "scaleY": 1});
+      }
+    canvas.renderAll();
+  } , 1);
+}
+
+
+
+
+
+  function tosvg() {
+    var svg = canvas.toSVG();
+    document.getElementById("svg").value = svg;
+
+  }
+
+  var canvas = this.__canvas = new fabric.Canvas('c');
+
+
+
+  function add() {
+    var red = new fabric.Rect({
+      top: 100, left: 0, width: 80, height: 50, fill: 'red'
+    });
+    var blue = new fabric.Rect({
+      top: 0, left: 100, width: 50, height: 70, fill: 'blue'
+    });
+    var green = new fabric.Rect({
+      top: 100, left: 100, width: 60, height: 60, fill: 'green'
+    });
+    canvas.add(red, blue, green);
+  }
+
+  var $ = function (id) { return document.getElementById(id) };
+
+
+  var red = new fabric.Rect({
+    top: 100, left: 100, width: 80, height: 50, fill: 'red'
+  });
+  var blue = new fabric.Rect({
+    top: 0, left: 200, width: 50, height: 70, fill: 'blue'
+  });
+  var green = new fabric.Rect({
+    top: 100, left: 300, width: 60, height: 60, fill: 'green'
+  });
+  fabric.Object.prototype.transparentCorners = false;
+
+  fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
+
+  var itext = new fabric.IText('This is a IText object', {
+    left: 100,
+    top: 150,
+    fill: '#D81B60',
+    strokeWidth: 1,
+    stroke: "#880E4F",
+  });
+
+  canvas.add(red, blue, green, itext);
+
+</script>
+
+</html>
