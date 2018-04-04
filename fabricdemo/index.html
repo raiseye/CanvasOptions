@@ -11,67 +11,106 @@
 
 <body>
 
-  <div style="padding:100px;">
-    <canvas id="c" width="500" height="500" style="border:1px solid #ccc; "></canvas>
+  <div style="padding:10px;">
+
     <input type="button" value="toSVG" onclick="tosvg()" />
     <input type="text" id="svg">
 
+
+    <input type="button" value="toJson" onclick="toJson()" />
+
     <input type="button" id="opt" value="angle" onclick="option()" />
 
-    <input type="button" id="scale" value="scale" onclick="scale()" />
+    <input type="button" id="scale+" value="scale+" onclick="scaleadd()" />
+    <input type="button" id="scale-" value="scale-" onclick="scalesubstract()" />
+
+    <div style="background-color:yellow; ">
+      <img id="bg" src="/images/a.jpg" style="position:absolute;z-index:99;width:500px;height:500px;" />
+      <canvas id="c" width="500" height="500" style="position:absolute;z-index:100; border:1px solid #ccc; "></canvas>
+
+    </div>
+
   </div>
 </body>
-
+<script src="/node_modules/jquery/dist/jquery.js"></script>
 <script src="/node_modules/fabric/dist/fabric.js"></script>
 
 <script>
 
-
-function scale()
-{
-  var oldWidth,oldHeight,newWidth,newHeight;
-  oldWidth = canvas.width;
-  oldHeight = canvas.height;
-  newHeight = oldHeight + 100;
-  newWidth = oldWidth + 200;
-
-  console.log(oldWidth);
-  console.log(oldHeight);
-  console.log(newHeight);
-  console.log(newWidth);
+  function toJson() {
+    var obj = canvas.getActiveObject();
+    console.log(obj);
+  }
 
 
-  canvas.width = newWidth;
-  canvas.height = newHeight;
+    var scaleX =0, scaleY =0,hp=0,wp=0;
 
-  canvas.renderAll();
+  function scaleadd() {
+    var oldWidth, oldHeight, newWidth, newHeight;
+    oldWidth = canvas.width;
+    oldHeight = canvas.height;
+
+    var addheight = 10;
+    var addwidth = 20;
+
+    newHeight = oldHeight + addheight;
+    newWidth = oldWidth + addwidth;
+
+    hp +=  addheight / newHeight,
+    wp += addwidth / oldWidth
+
+    console.log(oldWidth);
+    console.log(oldHeight);
+
+    console.log(newHeight);
+    console.log(newWidth);
 
 
+    canvas.setWidth(newWidth);
+    canvas.setHeight(newHeight);
+
+    $("#bg").css({ "width": $("#bg").width() + addwidth, "height": $("#bg").height() + addheight })
 
 
+    objects = canvas.getObjects();
+    if (objects.length > 0) {
+      for (var i = 0; i < objects.length; i++) {
+        var obj = objects[i];
+        obj.set({ "top": obj.top * (1 + addheight / newHeight), "left": obj.left * (1 + addwidth / oldWidth) });
+        // obj.set({"width":obj.width*(1+addwidth/oldWidth),"height":obj.height*(1+addheight/newHeight)});
+         scaleX = (1+wp), scaleY = (1+hp)
 
+        console.log(scaleX);
+        console.log(scaleY);
+        obj.set({ "scaleX": scaleX, "scaleY": scaleY });
 
-}
-
-
-function option(){
-  window.setInterval(function () {
-    console.log(red.get("angle"));
-    var obj = red;//canvas.getActiveObject();
-    if (obj)
-      if (obj.get("angle") <= 360) {
-        obj.set({ "angle": obj.get("angle") + 1});//, "scaleX": (obj.get("scaleX")) * (1 + 1 / 100), "scaleY": (obj.get("scaleY")) * (1 + 1 / 100) }
+        console.log(obj.type);
       }
-      else {
-        obj.set({ "angle": 0, "scaleX": 1, "scaleY": 1});
-      }
+    }
+
+
+
+
+
     canvas.renderAll();
-  } , 1);
-}
+
+  }
 
 
-
-
+  function option() {
+    window.setInterval(function () {
+      console.log(red.get("angle"));
+      var obj = red;//canvas.getActiveObject();
+      if (obj)
+        if (obj.get("angle") <= 360) {
+          obj.set({ "angle": obj.get("angle") + 1 });//, "scaleX": (obj.get("scaleX")) * (1 + 1 / 100), "scaleY": (obj.get("scaleY")) * (1 + 1 / 100) }
+        }
+        else {
+          obj.set({ "angle": 0, "scaleX": 1, "scaleY": 1 });
+        }
+      canvas.renderAll();
+    }, 1);
+  }
 
   function tosvg() {
     var svg = canvas.toSVG();
@@ -80,30 +119,11 @@ function option(){
   }
 
   var canvas = this.__canvas = new fabric.Canvas('c');
-
-
-
-  function add() {
-    var red = new fabric.Rect({
-      top: 100, left: 0, width: 80, height: 50, fill: 'red'
-    });
-    var blue = new fabric.Rect({
-      top: 0, left: 100, width: 50, height: 70, fill: 'blue'
-    });
-    var green = new fabric.Rect({
-      top: 100, left: 100, width: 60, height: 60, fill: 'green'
-    });
-    canvas.add(red, blue, green);
-  }
-
-  var $ = function (id) { return document.getElementById(id) };
-
-
   var red = new fabric.Rect({
     top: 100, left: 100, width: 80, height: 50, fill: 'red'
   });
   var blue = new fabric.Rect({
-    top: 0, left: 200, width: 50, height: 70, fill: 'blue'
+    top: 50, left: 200, width: 50, height: 70, fill: 'blue'
   });
   var green = new fabric.Rect({
     top: 100, left: 300, width: 60, height: 60, fill: 'green'
@@ -113,11 +133,11 @@ function option(){
   fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
 
   var itext = new fabric.IText('This is a IText object', {
-    left: 100,
+    left: 200,
     top: 150,
     fill: '#D81B60',
     strokeWidth: 1,
-    stroke: "#880E4F",
+    stroke: "#880E4F", fontSize: 30
   });
 
   canvas.add(red, blue, green, itext);
