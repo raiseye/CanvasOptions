@@ -22,7 +22,8 @@
     <input type="button" id="opt" value="angle" onclick="option()" />
 
     <input type="button" id="scale+" value="scale+" onclick="scaleadd()" />
-    <input type="button" id="scale-" value="scale-" onclick="scalesubstract()" />
+    <input type="button" id="animate" value="animate" />
+    <input type="button" id="angle" value="angle" />
 
     <div style="background-color:yellow; ">
       <img id="bg" src="/images/a.jpg" style="position:absolute;z-index:99;width:500px;height:500px;" />
@@ -37,13 +38,100 @@
 
 <script>
 
+
+
+
+
+
+  $(document).ready(function () {
+
+
+
+
+
+
+
+
+    $("#angle").click(function () {
+      // moveobjrepeat();
+      var color = new fabric.Color('#ccc').toRgb();
+      canvas.item(0).animate('fill', color, { onChange: canvas.renderAll.bind(canvas) });
+    })
+
+    $("#animate").click(function () {
+
+      objects = canvas.getObjects();
+      if (objects.length > 0) {
+        var j = 0;
+        for (var i = 0; i < objects.length; i++) {
+          var obj = objects[i];
+          j = (j >= animates.length ? 0 : j)
+          animates[j](obj);
+          j++;
+
+        }
+      }
+
+
+    })
+  }
+  )
+
+  function moveobjrepeat() {
+    fobj = canvas.item(0) //canvas.getActiveObject();
+    console.log(fobj)
+    if (fobj) {
+      canvas.renderAll()
+      fabric.util.requestAnimFrame(moveobjrepeat)
+      // fobj.animate('angle', '-=1', { onChange: canvas.renderAll.bind(canvas) });      
+      var color = new fabric.Color('#ccc').toRgb();
+      fobj.animate('fill', color, { onChange: canvas.renderAll.bind(canvas) });
+    }
+
+
+  }
+
+
+
+
+
+  var animates = [
+    function (fobj) {
+
+
+
+    },
+    // function (fobj) {
+    //   fobj.animate('left', '+=100', { onChange: canvas.renderAll.bind(canvas) ,onComplete:function(){fobj.animate('left', '-=100', { onChange: canvas.renderAll.bind(canvas)})}
+    //   });
+    // },
+    function (fobj) {
+      fobj.animate('left', 500, {
+        onChange: canvas.renderAll.bind(canvas),
+        duration: 1000,
+        easing: fabric.util.ease.easeOutBounce
+      });
+    },
+    function (fobj) {
+      fobj.animate('left', 500, {
+        onChange: canvas.renderAll.bind(canvas),
+        duration: 1000,
+        easing: fabric.util.ease.easeOutBounce
+      });
+    },
+    function (fobj) {
+      fobj.animate('angle', '-=5', { onChange: canvas.renderAll.bind(canvas) });
+    }
+  ]
+
+
   function toJson() {
     var obj = canvas.getActiveObject();
     console.log(obj);
   }
 
 
-    var scaleX =0, scaleY =0,hp=0,wp=0;
+  var scaleX = 0, scaleY = 0, hp = 0, wp = 0;
 
   function scaleadd() {
     var oldWidth, oldHeight, newWidth, newHeight;
@@ -56,8 +144,8 @@
     newHeight = oldHeight + addheight;
     newWidth = oldWidth + addwidth;
 
-    hp +=  addheight / newHeight,
-    wp += addwidth / oldWidth
+    hp += addheight / newHeight,
+      wp += addwidth / oldWidth
 
     console.log(oldWidth);
     console.log(oldHeight);
@@ -78,7 +166,7 @@
         var obj = objects[i];
         obj.set({ "top": obj.top * (1 + addheight / newHeight), "left": obj.left * (1 + addwidth / oldWidth) });
         // obj.set({"width":obj.width*(1+addwidth/oldWidth),"height":obj.height*(1+addheight/newHeight)});
-         scaleX = (1+wp), scaleY = (1+hp)
+        scaleX = (1 + wp), scaleY = (1 + hp)
 
         console.log(scaleX);
         console.log(scaleY);
@@ -87,10 +175,6 @@
         console.log(obj.type);
       }
     }
-
-
-
-
 
     canvas.renderAll();
 
@@ -141,6 +225,83 @@
   });
 
   canvas.add(red, blue, green, itext);
+
+
+  (function animate() {
+    fabric.util.animate({
+      startValue: Math.round(red.get("top")) === 50 ? 50 : 300,
+      endValue: Math.round(red.get("top")) === 50 ? 300 : 50,
+      duration: 1000,
+      onChange: function (value) {
+
+        red.set({ "top": value });
+
+        canvas.renderAll();
+      },
+      onComplete: animate
+    });
+  })();
+
+
+
+  (function animate() {
+    fabric.util.animate({
+      startValue: 0,
+      endValue:360,
+      duration: 1000,
+      onChange: function (value) {
+
+        red.set({ "angle": value });
+
+        canvas.renderAll();
+      },
+      onComplete: animate
+    });
+  })();
+
+
+  var curScale = 1;
+
+  (function animate() {
+    fabric.util.animate({
+      startValue: curScale,
+      endValue: curScale == 1 ? 0 : 1,
+      duration: 1000,
+      onChange: function (value) {
+        red.scale(value);
+        curScale = value;
+        console.log("*********************" + curScale)
+        canvas.renderAll();
+      },
+      onComplete: animate
+    });
+  })();
+
+  console.log(red.get("fill"));
+
+
+  (function animate() {
+    fabric.util.animateColor( "red", "blue", 1000, {
+
+      onChange: function (value) {
+        var ca = value.replace("NaN", "");
+        console.log(ca);
+        red.set({ "fill": ca });
+
+        canvas.renderAll();
+      },
+      onComplete: animate
+    });
+  })();
+
+
+
+  red.set({ "fill": "yellow" });
+
+
+
+
+
 
 </script>
 
