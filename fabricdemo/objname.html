@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+
+</head>
+
+<body>
+
+  <div style="padding:10px;">
+
+    <input type="button" value="toSVG" onclick="tosvg()" />
+    <input type="text" id="svg">
+
+
+    <input type="button" value="toJson" onclick="toJson()" />
+
+    <input type="button" id="opt" value="angle" onclick="option()" />
+
+    <input type="button" id="scale+" value="scale+" onclick="scaleadd()" />
+    <input type="button" id="animate" value="animate" />
+    <input type="button" id="angle" value="angle" />
+
+    <div style="background-color:yellow; ">
+      <img id="bg" src="/images/a.jpg" style="position:absolute;z-index:99;width:500px;height:500px;" />
+      <canvas id="c" width="500" height="500" style="position:absolute;z-index:100; border:1px solid #ccc; "></canvas>
+
+    </div>
+
+  </div>
+</body>
+
+<script src="/node_modules/jquery/dist/jquery.js"></script>
+<script src="/node_modules/fabric/dist/fabric.js"></script>
+
+<script>
+ var aaa = {};
+ 
+  for(var i=0;i<500; i++)
+  {
+      aaa.i = i;
+  }
+
+  for(var i=0;i<500; i++)
+  {
+      console.log(aaa.i);
+  }
+
+
+
+ var canvas = this.__canvas = new fabric.Canvas('c');
+
+  
+
+</script>
+
+</html>
